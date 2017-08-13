@@ -1,28 +1,31 @@
 package com.example.bruno.appliaffichesfilms.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Bruno on 09/08/2017.
  */
 
-public class Film {
+public class Film implements Serializable {
 
+    public Film()
+    {}
 
-
-    String titre;
-    String titre_ori;
-    String affiche;
-    String web;
-    String duree;
-    String distributeur;
-    String participants;
-    String realisateur;
-    String synopsis;
-    String annee;
-    String date_sortie;
-    String genre;
-    String categorie;
-    String pays;
-    String medias;
+    public String titre;
+    public String titre_ori;
+    public String affiche;
+    public String web;
+    public String duree;
+    public String distributeur;
+    public String participants;
+    public String realisateur;
+    public String synopsis;
+    public String annee;
+    public String date_sortie;
+    public String genre;
+    public String categorie;
+    public String pays;
+  //  public String medias;
 
     public String getTitre() {
         return titre;
@@ -136,13 +139,6 @@ public class Film {
         this.pays = pays;
     }
 
-    public String getMedias() {
-        return medias;
-    }
-
-    public void setMedias(String medias) {
-        this.medias = medias;
-    }
 
 
 

@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+
+
     private class DownloadFilesTask extends AsyncTask<URL, Void, ArrayList<Film>> {
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -75,14 +88,15 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = new Gson();
 
             try {
-                InputStreamReader reader = new InputStreamReader(u.openStream());
+                InputStreamReader reader = new InputStreamReader(u.openStream(), Charset.forName("UTF-8"));
 
                 BufferedReader readerr = new BufferedReader(
                         reader);
-                String test = readerr.lines().collect(Collectors.joining(System.getProperty("line.separator")));
 
-            JSONObject jsonObj = new JSONObject(test);
-            JSONArray data = jsonObj.getJSONArray("");
+
+                String resultat = readAll(readerr);
+                JSONArray data = new JSONArray(resultat);
+
 
             for (int i =0;i< data.length();i++)
             {
@@ -101,8 +115,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Film> films) {
             super.onPostExecute(films);
-            MyAdapter adapter = new MyAdapter(films);
+            MyAdapter adapter = new MyAdapter(films, MainActivity.this);
+            mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+            mLayoutManager = new LinearLayoutManager(MainActivity.this);
+            mRecyclerView.setLayoutManager(mLayoutManager);
             mRecyclerView.setAdapter(adapter);
+            mRecyclerView.setHasFixedSize(true);
         }
     }
 
