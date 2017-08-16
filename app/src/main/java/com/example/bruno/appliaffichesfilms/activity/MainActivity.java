@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    String url = "http://voyage3.corellis.eu/filmsSeances.json";
+    public static String url = "http://voyage3.corellis.eu/filmsSeances.json";
     ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
