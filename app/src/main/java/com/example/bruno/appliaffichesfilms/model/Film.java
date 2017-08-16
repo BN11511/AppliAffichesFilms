@@ -1,6 +1,8 @@
 package com.example.bruno.appliaffichesfilms.model;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by Bruno on 09/08/2017.
@@ -25,7 +27,19 @@ public class Film implements Serializable {
     public String genre;
     public String categorie;
     public String pays;
-  //  public String medias;
+
+    public ArrayList<String> getImagesX() {
+        return imagesX;
+    }
+
+    public void setImagesX(ArrayList<String> images) {
+        this.imagesX = images;
+    }
+
+    public ArrayList<String> imagesX;
+
+
+
 
     public String getTitre() {
         return titre;

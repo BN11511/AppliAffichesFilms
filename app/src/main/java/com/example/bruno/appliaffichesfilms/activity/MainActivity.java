@@ -1,6 +1,7 @@
 package com.example.bruno.appliaffichesfilms.activity;
 
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     String url = "http://voyage3.corellis.eu/filmsSeances.json";
-
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-
+        pd = new ProgressDialog(MainActivity.this);
+        pd.setTitle("AppliAffichesFilms");
+        pd.setMessage("Chargement des films");
+        pd.show();
 
         URL u = null;
         try {
@@ -98,21 +102,35 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray data = new JSONArray(resultat);
 
 
-            for (int i =0;i< data.length();i++)
-            {
-                JSONObject jsonfilm = data.getJSONObject(i);
-                Film film = gson.fromJson(jsonfilm.toString(), Film.class);
-                films.add(film);
-            }
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject jsonfilm = data.getJSONObject(i);
+                    Film film = gson.fromJson(jsonfilm.toString(), Film.class);
+                    JSONArray medias = null;
+                    ArrayList<String> images = new ArrayList<>();
+                    try {
+                        medias = jsonfilm.getJSONArray("medias");
+                    } catch (JSONException e) {
+                    }
+
+                    if (medias != null) {
+                        for (int a = 0; a < medias.length(); a++) {
+                            JSONObject jsonimage = medias.getJSONObject(a);
+                            String image = (String) jsonimage.getString("path");
+                            images.add(image.split("&")[0]);
+                        }
+                    }
+                    film.setImagesX(images);
+                    films.add(film);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+                return films;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return films;
         }
-
-        @Override
+            @Override
         protected void onPostExecute(ArrayList<Film> films) {
             super.onPostExecute(films);
             MyAdapter adapter = new MyAdapter(films, MainActivity.this);
@@ -121,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(mLayoutManager);
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.setHasFixedSize(true);
+            if(pd.isShowing())
+                pd.dismiss();
         }
     }
 
